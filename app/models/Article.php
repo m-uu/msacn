@@ -8,6 +8,11 @@ class Article extends Eloquent
 
 	public function creator()
 	{
-		return $this->hasOne('Player', 'id', 'id');
+		return $this->hasOne('Player');
+	}
+
+	public function category()
+	{
+		return $this->hasOne('ArticleCategory');
 	}
 }

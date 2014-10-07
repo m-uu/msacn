@@ -15,7 +15,7 @@ class ArticleController extends BaseController
 		return Response::json($article);
 	}
 
-	public function fetch_page($page = 1, $limit = 15)
+	public function fetch_page($category = 1, $page = 1, $limit = 15)
 	{
 		if ($limit < 5)
 			$limit = 5;
@@ -40,8 +40,13 @@ class ArticleController extends BaseController
 			$pagi[$i] = $i;
 		}
 
-		$articles = Article::select('id', 'title', 'creator', 'category', 'created_at', 'updated_at')->skip($limit * ($page - 1))->take($limit)->get();
-		$result = array('data'=>$articles, 'max_count'=>$max_count, 'total_page'=>ceil($max_count / $limit), 'current_page'=>$page, 'pagi'=>$pagi);
+		$articles = Article::select('id', 'title', 'creator', 'category', 'created_at', 'updated_at')
+			->where('category', '=', $category)
+			->skip($limit * ($page - 1))
+			->take($limit)->orderBy('created_at', 'desc')
+			->get();
+
+		$result = array('data'=>$articles, 'category'=>$category, 'max_count'=>$max_count, 'total_page'=>ceil($max_count / $limit), 'current_page'=>$page, 'pagi'=>$pagi);
 		return Response::json($result);
 	}
 
@@ -50,11 +55,19 @@ class ArticleController extends BaseController
 		$title = Input::get('title');
 		$content = Input::get('content');
 		$creator = 1;
+		$category = Input::get('category');
 		$article = new Article;
 		$article->title = $title;
 		$article->content = $content;
 		$article->creator = $creator;
+		$article->category = $category;
 		$article->save();
 		return Response::json(array('result'=>'Successfullly created new article.'), 200);
+	}
+
+	public function get_categories()
+	{
+		$categories = ArticleCategory::all();
+		return Response::json($categories);
 	}
 }

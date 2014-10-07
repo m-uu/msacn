@@ -27,11 +27,8 @@
                 
                 <div class="form-group m-b-15">
                     <label>区域</label>
-                    <select class="form-control select">
-                        <option>综合讨论区</option>
-                        <option>屠杀仪式</option>
-                        <option>放血小队</option>
-                        <option>骨粉专卖</option>
+                    <select class="form-control select" ng-model="publish_article_data.category" ng-options="cate.id as cate.category for cate in article_categories">
+                        <option value="" selected>选择一个主题区域（不要选这个！）</option>
                     </select>
                 </div>
                 

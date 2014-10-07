@@ -19,8 +19,6 @@ msa.controller("LoginController", function($scope, AuthService) {
 });
 
 msa.controller('HomeController', function($scope, ArticleService) {
-	ArticleService.init_headline();
-	ArticleService.fetch_articles(1);
 	$scope.fetch_prev_page = function() {
 		ArticleService.fetch_prev_page();
 	};
@@ -49,8 +47,17 @@ msa.controller('HomeController', function($scope, ArticleService) {
 			$scope.show_poster = false;
 			$scope.publish_article_data = null;
 		});
-		
 	};
+	$scope.get_article_category = function() {
+		ArticleService.get_category().success(function () {
+			$scope.publish_article_data.category = $scope.article_categories[0];
+		});
+	};
+		
+	// Execute on init.
+	ArticleService.init_headline();
+	ArticleService.fetch_articles(1);
+	ArticleService.get_category();
 });
 
 msa.factory('ArticleService', function($http, $rootScope) {
@@ -61,9 +68,12 @@ msa.factory('ArticleService', function($http, $rootScope) {
 		$rootScope.error_code = response;
 	};
 	var fetch_article = function(page) {
-		var result = $http.get('/api/articles/' + page);
+		var result = $http.get('/api/articles/1/' + page + '/15');
 		result.success(fill_articles);
 		return result;
+	};
+	var assign_category_data = function(response) {
+		$rootScope.article_categories = response;
 	};
 	return {
 		init_headline: function() {
@@ -85,7 +95,13 @@ msa.factory('ArticleService', function($http, $rootScope) {
 			fetch_article($rootScope.articles.current_page - 1);
 		},
 		publish_article: function(publish_article_data) {
+			if (publish_article_data.category == null)
+				return; // todo: add warning message.
 			var result = $http.post('/api/publish_article', publish_article_data).success(fetch_article(1));
+			return result;
+		},
+		get_category: function() {
+			var result = $http.get('/api/article_categories').success(assign_category_data);
 			return result;
 		}
 	};

@@ -30,8 +30,9 @@ Route::group(array('prefix'=>'api'), function() {
 	#article
 	Route::get('/article/{id}', array('as'=>'article_view', 'uses'=>'ArticleController@view'));
 	Route::get('/articles', 'ArticleController@fetch');
-	Route::get('/articles/{page}', 'ArticleController@fetch_page');
+	Route::get('/articles/{category}/{page}/{limit}', 'ArticleController@fetch_page');
 	Route::post('/publish_article', 'ArticleController@publish');
+	Route::get('/article_categories', 'ArticleController@get_categories');
 });
 
 # index
