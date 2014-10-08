@@ -6,4 +6,9 @@ class SiteController extends BaseController
 	{
 		return View::make('index');
 	}
+
+	public function login()
+	{
+		return View::make('login');
+	}
 }

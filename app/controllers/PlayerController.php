@@ -16,16 +16,17 @@ class PlayerController extends BaseController {
 
 	public function login()
 	{
-		if (Auth::attempt(array('email'=>Input::json('email'), 'password'=>Input::json('password'))))
-			return Response::json(array('auth_code'=>5));
+		$remember = Input::get('remember') == 'on' ? true : false;
+		if (Auth::attempt(array('email'=>Input::get('email'), 'password'=>Input::get('password')), $remember))
+			return Redirect::to('/home');
 		else
-			return Response::json(array('auth_code'=>3));
+			return Redirect::to('/login');
 	}
 
 	public function logout()
 	{
 		Auth::logout();
-		return Response::json(array('auth_code'=>4));
+		return Redirect::to('/login');
 	}
 
 	public function reg()
@@ -35,7 +36,8 @@ class PlayerController extends BaseController {
 		$player->password = Hash::make(Input::get('password'));
 		$player->nickname = Input::get('nickname');
 		$player->save();
-		return Redirect::to('/login')->with('reg_success', 'Reg Success!');
+		Auth::login($player);
+		return Redirect::to('/home');
 	}
 
 	public function bind()
@@ -57,6 +59,13 @@ class PlayerController extends BaseController {
 			return Response::json(array('auth_code'=>1));
 		return Response::json(array('auth_code'=>2));
 	}
-}
 
-?>
+	public function validateEmail()
+	{
+		$fieldid = Input::get('fieldId');
+		$email = Input::get('fieldValue');
+		if (Player::where('email', '=', $email)->count() != 0)
+			return Response::json(array($fieldid, false, '这个邮箱地址已经被用掉了。'), 200);
+		return Response::json(array($fieldid, true, '恭喜！这个邮箱还可以注册！'), 200);
+	}
+}

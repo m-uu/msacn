@@ -12,8 +12,8 @@
 */
 Route::group(array('prefix'=>'api'), function() {
 	# user
-	Route::post('/login', array('as'=>'login', 'uses'=>'PlayerController@login'));
-	Route::post('/register', array('as'=>'register', 'uses'=>'PlayerController@reg'));
+	Route::post('/login', array('as'=>'try_login', 'uses'=>'PlayerController@login'));
+	Route::post('/register', array('as'=>'try_register', 'uses'=>'PlayerController@reg'));
 	Route::get('/logout', array('as'=>'logout', 'uses'=>'PlayerController@logout'));
 	Route::get('/player/{id}', array('as'=>'player_view', 'uses'=>'PlayerController@view'));
 	Route::post('/check_login', 'PlayerController@check_login');
@@ -33,10 +33,14 @@ Route::group(array('prefix'=>'api'), function() {
 	Route::get('/articles/{category}/{page}/{limit}', 'ArticleController@fetch_page');
 	Route::post('/publish_article', 'ArticleController@publish');
 	Route::get('/article_categories', 'ArticleController@get_categories');
+
+	#validation
+	Route::get('/validateEmail/', 'PlayerController@validateEmail');
 });
 
 # index
 Route::get('/', array('as'=>'index', 'uses'=>'SiteController@index'));
+Route::get('/login', array('as'=>'login', 'uses'=>'SiteController@login'));
 
 # default redirect
 App::missing(function() {

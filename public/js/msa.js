@@ -12,12 +12,6 @@ msa.config(function($routeProvider, $locationProvider) {
 	$locationProvider.html5Mode(true);
 });
 
-msa.controller("LoginController", function($scope, AuthService) {
-	$scope.login = function() {
-		AuthService.login($scope.credentials).then(AuthService.process);
-	};
-});
-
 msa.controller('HomeController', function($scope, ArticleService) {
 	$scope.fetch_prev_page = function() {
 		ArticleService.fetch_prev_page();
@@ -31,7 +25,6 @@ msa.controller('HomeController', function($scope, ArticleService) {
 	$scope.refresh_articles = function() {
 		ArticleService.fetch_articles($scope.articles.current_page);
 	};
-	$scope.show_poster = true;
 	$scope.open_poster = function() {
 		if ($scope.show_poster == true)
 			return;
@@ -58,6 +51,7 @@ msa.controller('HomeController', function($scope, ArticleService) {
 	ArticleService.init_headline();
 	ArticleService.fetch_articles(1);
 	ArticleService.get_category();
+	$scope.show_poster = false;
 });
 
 msa.factory('ArticleService', function($http, $rootScope) {
@@ -105,35 +99,4 @@ msa.factory('ArticleService', function($http, $rootScope) {
 			return result;
 		}
 	};
-});
-
-msa.factory('AuthService', function($http, $rootScope, $location) {
-	var getAuthStatus = function(auth_code) {
-			switch (auth_code)
-			{
-				case 1: return '已经登录。'; break;
-				case 2: return '未登录。'; break;
-				case 3: return '邮箱地址或密码错误。'; break;
-				case 4: return '注销成功。'; break;
-				case 5: return '认证成功。'; break;
-				default: return '认证状态未知。服务器发送了一个未知响应。'; break;
-			}
-		};
-	var updateAuthStatus = function(response) {
-			$rootScope.auth_info = getAuthStatus(response.auth_code);
-		};
-	return {
-		login: function(credentials) {
-			var login = $http.post('/login', credentials);
-			login.success(updateAuthStatus);
-			return login;
-		},
-		process: function(response) {
-			switch (response.data.auth_code)
-			{
-				case 5: $location.path('/'); break;
-				default: break;
-			}
-		}
-	}
 });
