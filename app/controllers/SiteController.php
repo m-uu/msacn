@@ -4,7 +4,10 @@ class SiteController extends BaseController
 {
 	public function index()
 	{
-		return View::make('index');
+		if (Auth::check())
+			return Redirect::to('/home');
+		else
+			return Redirect::to('/login');
 	}
 
 	public function login()

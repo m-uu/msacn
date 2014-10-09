@@ -52,9 +52,12 @@ class ArticleController extends BaseController
 
 	public function publish()
 	{
+		if (!Auth::check())
+			return Response::json(array('success'=>false, 'msg'=>'You must login to do that.'), 200);
+
 		$title = Input::get('title');
 		$content = Input::get('content');
-		$creator = 1;
+		$creator = Auth::user()->id;
 		$category = Input::get('category');
 		$article = new Article;
 		$article->title = $title;
@@ -62,12 +65,21 @@ class ArticleController extends BaseController
 		$article->creator = $creator;
 		$article->category = $category;
 		$article->save();
-		return Response::json(array('result'=>'Successfullly created new article.'), 200);
+		
+		return Response::json(array('success'=>true, 'msg'=>'Successfullly created new article.'), 200);
 	}
 
 	public function get_categories()
 	{
 		$categories = ArticleCategory::all();
 		return Response::json($categories);
+	}
+
+	public function fetch_single_article($id)
+	{
+		$article = Article::find($id);
+		if ($article)
+			return Response::json($article);
+		return Response::json(array('title'=>'Article Not Exsit.'), 200);
 	}
 }

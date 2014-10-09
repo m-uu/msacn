@@ -64,7 +64,7 @@
         <script src="js/vendor/angular.js"></script>
         <script src="js/vendor/angular-route.js"></script>
         <script src="js/msa.js"></script>
-
+    
         <!-- Text Editor -->
         <script src="js/editor.min.js"></script> <!-- WYSIWYG Editor -->
 

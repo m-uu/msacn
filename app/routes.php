@@ -13,7 +13,7 @@
 Route::group(array('prefix'=>'api'), function() {
 	# user
 	Route::post('/login', array('as'=>'try_login', 'uses'=>'PlayerController@login'));
-	Route::post('/register', array('as'=>'try_register', 'uses'=>'PlayerController@reg'));
+	Route::post('/register', array('as'=>'try_register', 'uses'=>'PlayerController@register'));
 	Route::get('/logout', array('as'=>'logout', 'uses'=>'PlayerController@logout'));
 	Route::get('/player/{id}', array('as'=>'player_view', 'uses'=>'PlayerController@view'));
 	Route::post('/check_login', 'PlayerController@check_login');
@@ -28,11 +28,11 @@ Route::group(array('prefix'=>'api'), function() {
 	Route::post('/legacy/wiki', array('as'=>'legacy_wiki_store', 'uses'=>'LegacyWikiController@store'));
 
 	#article
-	Route::get('/article/{id}', array('as'=>'article_view', 'uses'=>'ArticleController@view'));
 	Route::get('/articles', 'ArticleController@fetch');
 	Route::get('/articles/{category}/{page}/{limit}', 'ArticleController@fetch_page');
 	Route::post('/publish_article', 'ArticleController@publish');
 	Route::get('/article_categories', 'ArticleController@get_categories');
+	Route::get('/article/{id}', 'ArticleController@fetch_single_article');
 
 	#validation
 	Route::get('/validateEmail/', 'PlayerController@validateEmail');

@@ -29,7 +29,7 @@ class PlayerController extends BaseController {
 		return Redirect::to('/login');
 	}
 
-	public function reg()
+	public function register()
 	{
 		$player = new Player;
 		$player->email = Input::get('email');

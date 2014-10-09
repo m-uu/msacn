@@ -1,0 +1,107 @@
+<h4 class="page-title">小黑屋第二层</h4>
+<article class="block-area" ng-show="show_page_header">
+    <h2>{{ category_headline_title }}</h2>
+    <p>{{ category_headline_content }}</p>
+</article>
+<hr class="whiter" ng-show="show_page_header"/>
+<div class="block-area" ng-show="show_poster">
+    <div class="row m-container">
+        <div class="tile">
+            <h2 class="tile-title">发布新文章</h2>
+            <div class="tile-config dropdown">
+                <a data-toggle="dropdown" href="" class="tooltips tile-menu" title="" data-original-title="Options"></a>
+                <ul class="dropdown-menu pull-right text-right">
+                    <li><a href="" ng-click="close_poster()">隐藏（保留内容）</a></li>
+                    <li><a href="">转存至个人文献</a></li>
+                    <li><a href="">删除（包括草稿）</a></li>
+                    <li><a href="" ng-click="close_poster()">关闭并清除内容</a></li>
+                </ul>
+            </div>
+            
+            <form role="form" class="p-15">
+                <div class="form-group m-b-15">
+                    <label>标题</label>
+                    <input type="text" class="form-control input-sm" ng-model="publish_article_data.title">
+                </div>
+                
+                <div class="form-group m-b-15">
+                    <label>区域</label>
+                    <select class="form-control select" ng-model="publish_article_data.category" ng-options="cate.id as cate.category for cate in article_categories">
+                        <option value="" selected>选择一个主题区域（不要选这个！）</option>
+                    </select>
+                </div>
+                
+                <div class="form-group m-b-15">
+                    <label>正文</label>
+                    <summernote height="300" ng-model="publish_article_data.content"></summernote>
+                </div>
+                
+                <button type="submit" class="btn btn-sm" ng-click="publish()">发布</button>
+                <button type="submit" class="btn btn-sm">保存草稿</button>
+                
+            </form>
+        </div>
+    </div>
+</div>
+<div class="listview list-container" ng-show="show_post_container">
+    <header class="listview-header media">
+        <input type="checkbox" class="pull-left list-parent-check" value="" ng-icheck>
+        <ul class="list-inline pull-right m-t-5 m-b-0">
+            <li>
+                <a href="" title="上一页" class="tooltips" ng-disabled="articles.current_page==1" ng-click="fetch_prev_page()">
+                    <i class="sa-list-back"></i>
+                </a>
+            </li>
+            <li>
+                <a href="" title="下一页" class="tooltips" ng-disabled="articles.current_page==articles.last_page" ng-click="fetch_next_page()">
+                    <i class="sa-list-forwad"></i>
+                </a>
+            </li>
+        </ul>
+        <ul class="list-inline list-mass-actions pull-left">
+            <li ng-show="!show_poster">
+                <a href="" title="发表文章" class="tooltips" ng-click="open_poster()">
+                    <i class="sa-list-add"></i>
+                </a>
+            </li>
+            <li>
+                <a href="" title="刷新" class="tooltips" ng-click="refresh_articles()">
+                    <i class="sa-list-refresh"></i>
+                </a>
+            </li>
+            <li>
+                <a href="" title="移动" class="tooltips">
+                    <i class="sa-list-move"></i>
+                </a>
+            </li>
+            <li>
+                <a href="" title="删除" class="tooltips">
+                    <i class="sa-list-delete"></i>
+                </a>
+            </li>
+        </ul>
+        <input class="input-sm col-md-4 pull-right message-search" type="text" placeholder="关键词（过滤本页帖子）" ng-model="article_title">
+        <div class="clearfix"></div>        
+    </header>
+    <div class="media" ng-repeat="article in articles.data | filter:article_title">
+        <input type="checkbox" class="pull-left list-check" value="">
+        <div class="media-body">
+            <a href="" ng-click="view_article(article.id)">{{ article.title }}</a>
+            <div class="clearfix"></div>
+            <small><a href="" ng-click="view_player(article.creator)">{{article.creator}}</a>发表于{{ article.created_at }} 回复: 1254</small>
+            <div class="list-options">
+                <button class="btn btn-sm" ng-clink="article_preview(article.id)">预览</button>
+                <button class="btn btn-sm">删除</button>
+            </div>
+        </div>
+    </div>
+    <div class="media text-center">
+        <ul class="pagination">
+        {{ article_pagination }}
+            <li ng-disabled="articles.current_page==1" ng-click="fetch_prev_page()"><a href="#"><i class="fa fa-angle-left"></i></a></li>
+            <li ng-repeat="pagi in articles.pagi"><a href="" ng-click="fetch_page(pagi)">{{ pagi }}</a></li>
+            <li><a href="" ng-disabled="articles.current_page==articles.total_page" ng-click="fetch_next_page()"><i class="fa fa-angle-right"></i></a></li>
+        </ul>
+    </div>
+</div>
+<hr class="whiter" ng-show="show_post_container"/>
